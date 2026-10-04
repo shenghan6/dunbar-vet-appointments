@@ -19,6 +19,13 @@ class Animal(db.Model):
     client_id = db.Column(db.Integer, db.ForeignKey('client.id'))
     client = db.relationship('Client', backref=db.backref('animals', lazy=True))
 
+class Property(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+    address = db.Column(db.String(200))
+    contact_phone = db.Column(db.String(20))
+    area = db.Column(db.String(40))
+
 class Appointment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.String(20))
@@ -55,6 +62,29 @@ def add_animal():
         return redirect(url_for('animals'))
     clients = Client.query.all()
     return render_template('add_animal.html', clients=clients)
+
+@app.route('/properties')
+def properties():
+    return render_template('properties.html', properties=Property.query.all())
+
+@app.route('/properties/add', methods=['GET', 'POST'])
+def add_property():
+    if request.method == 'POST':
+        p = Property(
+            name=request.form['name'],
+            address=request.form['address'],
+            contact_phone=request.form['contact_phone'],
+            area=request.form['area']
+        )
+        db.session.add(p)
+        db.session.commit()
+        return redirect(url_for('properties'))
+    return render_template('add_property.html')
+
+@app.route('/route')
+def route_view():
+    properties = Property.query.order_by(Property.name).all()
+    return render_template('route.html', properties=properties)
 
 with app.app_context():
     db.create_all()
