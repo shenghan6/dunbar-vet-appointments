@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Properties</h2>
+<table>
+    <tr><th>ID</th><th>Name</th><th>Address</th><th>Phone</th><th>Area</th></tr>
+    {% for p in properties %}
+    <tr>
+        <td>{{ p.id }}</td>
+        <td>{{ p.name }}</td>
+        <td>{{ p.address }}</td>
+        <td>{{ p.contact_phone }}</td>
+        <td>{{ p.area }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
