@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Clients</h2>
+<form method="get" style="margin-bottom:15px;">
+    <input type="text" name="q" value="{{ q }}" placeholder="Search by name or phone">
+    <button type="submit">Search</button>
+    <a href="/clients">Reset</a>
+</form>
+<table>
+    <tr><th>ID</th><th>Name</th><th>Phone</th><th>Address</th><th>Status</th><th>Actions</th></tr>
+    {% for c in clients %}
+    <tr>
+        <td>{{ c.id }}</td>
+        <td>{{ c.name }}</td>
+        <td>{{ c.phone }}</td>
+        <td>{{ c.address }}</td>
+        <td>{% if c.is_active %}Active{% else %}Deactivated{% endif %}</td>
+        <td>
+            <a href="/clients/{{ c.id }}/edit">Edit</a>
+            {% if c.is_active %}
+            <form method="post" action="/clients/{{ c.id }}/deactivate" style="display:inline;">
+                <button type="submit" onclick="return confirm('Deactivate this client?')">Deactivate</button>
+            </form>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

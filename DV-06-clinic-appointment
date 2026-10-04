@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DV‑06 Clinic Appointment Booking</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width:700px; margin:30px auto; padding:0 20px; }
+        .form-group { margin:16px 0; }
+        label { display:block; margin-bottom:6px; font-weight:bold; }
+        input, select { width:100%; padding:8px; box-sizing:border-box; }
+        button { padding:10px 20px; background:#2c7bb6; color:white; border:none; border-radius:4px; cursor:pointer; }
+        .error { color:red; }
+        .success { color:green; }
+    </style>
+</head>
+<body>
+    <h2>Book Clinic Consultation Appointment</h2>
+    <p>Clinic appointment only, linked to animal record (No farm property)</p>
+
+    <form id="appointmentForm">
+        <div class="form-group">
+            <label>Pet Name</label>
+            <input type="text" id="petName" required>
+        </div>
+        <div class="form-group">
+            <label>Animal ID</label>
+            <input type="text" id="animalId" required>
+        </div>
+        <div class="form-group">
+            <label>Owner Contact Email</label>
+            <input type="email" id="ownerEmail" required>
+        </div>
+        <div class="form-group">
+            <label>Consulting Room</label>
+            <select id="roomSelect">
+                <option value="Room1">Consulting Room 1</option>
+                <option value="Room2">Consulting Room 2</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Appointment Date & Time (Start)</label>
+            <input type="datetime-local" id="startTime" required>
+        </div>
+        <div class="form-group">
+            <p class="error" id="errorMsg"></p>
+            <p class="success" id="successMsg"></p>
+        </div>
+        <button type="submit">Create Clinic Appointment</button>
+    </form>
+
+<script>
+// Stored appointments for conflict check
+let appointmentList = [];
+
+// Form submit handler
+const form = document.getElementById('appointmentForm');
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    document.getElementById('errorMsg').textContent = "";
+    document.getElementById('successMsg').textContent = "";
+
+    const petName = document.getElementById('petName').value.trim();
+    const animalId = document.getElementById('animalId').value.trim();
+    const ownerEmail = document.getElementById('ownerEmail').value.trim();
+    const room = document.getElementById('roomSelect').value;
+    const start = new Date(document.getElementById('startTime').value);
+    // Clinic appointment fixed 15 minutes duration
+    const end = new Date(start.getTime() + 15 * 60000);
+
+    // Check time overlap in same consulting room
+    const hasConflict = appointmentList.some(apt => {
+        if (apt.room !== room) return false;
+        const existingStart = new Date(apt.startTime);
+        const existingEnd = new Date(apt.endTime);
+        return !(end <= existingStart || start >= existingEnd);
+    });
+
+    if (hasConflict) {
+        document.getElementById('errorMsg').textContent =
+            "Time conflict! This room already has an overlapping appointment.";
+        return;
+    }
+
+    // Save new clinic appointment
+    const newApt = {
+        petName,
+        animalId,
+        ownerEmail,
+        room,
+        startTime: start.toISOString(),
+        endTime: end.toISOString(),
+        type: "Clinic Appointment"
+    };
+    appointmentList.push(newApt);
+
+    document.getElementById('successMsg').textContent =
+        `Success! Clinic appointment created for ${petName}, Room ${room}.`;
+    form.reset();
+});
+</script>
+</body>
+</html>
