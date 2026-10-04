@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Add Animal</h2>
+<form method="post">
+    Name: <input name="name"><br><br>
+    Species: <input name="species"><br><br>
+    Breed: <input name="breed"><br><br>
+    Owner:
+    <select name="client_id">
+        <option value="">-- select --</option>
+        {% for c in clients %}
+        <option value="{{ c.id }}">{{ c.name }}</option>
+        {% endfor %}
+    </select><br><br>
+    <button type="submit">Save</button>
+</form>
+{% endblock %}

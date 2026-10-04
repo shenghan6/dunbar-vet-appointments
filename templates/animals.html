@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Animals</h2>
+<table>
+    <tr><th>ID</th><th>Name</th><th>Species</th><th>Breed</th></tr>
+    {% for a in animals %}
+    <tr>
+        <td>{{ a.id }}</td>
+        <td>{{ a.name }}</td>
+        <td>{{ a.species }}</td>
+        <td>{{ a.breed }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
