@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
 
+
 app = Flask(__name__)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
@@ -30,7 +31,8 @@ class Appointment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.String(20))
     time = db.Column(db.String(10))
-    kind = db.Column(db.String(20))
+    kind = db.Column(db.String(20), default="clinic")  # clinic=诊所预约 / farm=农场出诊
+    status = db.Column(db.String(20), default="confirmed")  # confirmed=已确认 / cancelled=已取消
     animal_id = db.Column(db.Integer, db.ForeignKey('animal.id'))
 
 @app.route('/')
@@ -81,13 +83,51 @@ def add_property():
         return redirect(url_for('properties'))
     return render_template('add_property.html')
 
-@app.route('/route')
-def route_view():
-    properties = Property.query.order_by(Property.name).all()
-    return render_template('route.html', properties=properties)
 
-with app.app_context():
-    db.create_all()
+# ---------- DV-08: cancel & reschedule appointment ----------
+
+def _has_time_conflict(kind, date, time, exclude_id=None):
+    """检查同一种类(clinic/farm)在同一天同一时间是否已有已确认预约。"""
+    q = Appointment.query.filter_by(kind=kind, date=date, time=time, status="confirmed")
+    if exclude_id is not None:
+        q = q.filter(Appointment.id != exclude_id)
+    return q.first() is not None
+
+
+@app.route('/appointments/<int:apt_id>/cancel', methods=['POST'])
+def cancel_appointment(apt_id):
+    apt = Appointment.query.get_or_404(apt_id)
+    if apt.status == "cancelled":
+        return {"error": "Appointment is already cancelled"}, 400
+    apt.status = "cancelled"
+    db.session.commit()
+    return {"message": "Appointment cancelled", "id": apt.id, "status": apt.status}
+
+
+@app.route('/appointments/<int:apt_id>/reschedule', methods=['POST'])
+def reschedule_appointment(apt_id):
+    apt = Appointment.query.get_or_404(apt_id)
+    if apt.status == "cancelled":
+        return {"error": "Cannot reschedule a cancelled appointment"}, 400
+
+    if request.is_json:
+        data = request.get_json()
+        new_date = data.get('date')
+        new_time = data.get('time')
+    else:
+        new_date = request.form.get('date')
+        new_time = request.form.get('time')
+    if not new_date or not new_time:
+        return {"error": "date and time are required"}, 400
+
+    if _has_time_conflict(apt.kind, new_date, new_time, exclude_id=apt.id):
+        return {"error": "Time conflict: another confirmed appointment already exists"}, 409
+
+    apt.date = new_date
+    apt.time = new_time
+    db.session.commit()
+    return {"message": "Appointment rescheduled", "id": apt.id, "date": apt.date, "time": apt.time}
+
 
 if __name__ == '__main__':
     app.run(debug=True)
