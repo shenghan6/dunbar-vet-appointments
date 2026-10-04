@@ -32,8 +32,14 @@ def home():
 
 @app.route('/animals')
 def animals():
-    all_animals = Animal.query.all()
-    return render_template('animals.html', animals=all_animals)
+    q = request.args.get('q', '')
+    if q:
+        all_animals = Animal.query.filter(
+            db.or_(Animal.name.contains(q), Animal.species.contains(q))
+        ).all()
+    else:
+        all_animals = Animal.query.all()
+    return render_template('animals.html', animals=all_animals, q=q)
 
 @app.route('/animals/add', methods=['GET', 'POST'])
 def add_animal():
