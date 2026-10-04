@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Animals</h2>
+<form method="get" style="margin-bottom:15px;">
+    <input type="text" name="q" value="{{ q }}" placeholder="Search by name or species">
+    <button type="submit">Search</button>
+    <a href="/animals">Reset</a>
+</form>
+<table>
+    <tr><th>ID</th><th>Name</th><th>Species</th><th>Breed</th></tr>
+    {% for a in animals %}
+    <tr>
+        <td>{{ a.id }}</td>
+        <td>{{ a.name }}</td>
+        <td>{{ a.species }}</td>
+        <td>{{ a.breed }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

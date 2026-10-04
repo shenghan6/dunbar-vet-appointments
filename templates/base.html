@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dunbar Vet Appointments</title>
+    <style>
+        body { font-family: Arial; margin: 30px; }
+        nav a { margin-right: 15px; }
+        table, th, td { border: 1px solid #999; border-collapse: collapse; padding: 6px 12px; }
+    </style>
+</head>
+<body>
+    <h1>Dunbar Vet Clinic</h1>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/animals">Animals</a>
+        <a href="/animals/add">Add Animal</a>
+        <a href="/properties">Properties</a>
+        <a href="/properties/add">Add Property</a>
+
+    </nav>
+    <hr>
+    {% block content %}{% endblock %}
+</body>
+</html>
