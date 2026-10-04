@@ -89,5 +89,10 @@ def route_view():
 with app.app_context():
     db.create_all()
 
+@app.route('/appointment', methods=["GET","POST"])
+def appointment():
+    return render_template("appointment.html")
+
 if __name__ == '__main__':
     app.run(debug=True)
+
