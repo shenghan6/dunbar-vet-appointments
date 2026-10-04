@@ -145,6 +145,9 @@ def appointment():
 
 if __name__ == '__main__':
     app.run(debug=True)
+    @app.route('/dv11')
+def dv11_page():
+    return "<h1>DV11: Pet Record Query Page</h1><p>This is ZiangDong's independent work for A2. This page allows staff to search pet basic information.</p>"
 
     @app.route('/dv09')
 def dv09_page():
