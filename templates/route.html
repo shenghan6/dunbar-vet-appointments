@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Daily Farm Route</h2>
+<p>Ordered visit list for farm calls.</p>
+<table>
+    <tr><th>Stop</th><th>Property</th><th>Address</th><th>Phone</th></tr>
+    {% for p in properties %}
+    <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ p.name }}</td>
+        <td>{{ p.address }}</td>
+        <td>{{ p.contact_phone }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

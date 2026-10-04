@@ -81,6 +81,11 @@ def add_property():
         return redirect(url_for('properties'))
     return render_template('add_property.html')
 
+@app.route('/route')
+def route_view():
+    properties = Property.query.order_by(Property.name).all()
+    return render_template('route.html', properties=properties)
+
 with app.app_context():
     db.create_all()
 
