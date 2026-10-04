@@ -91,3 +91,6 @@ with app.app_context():
 
 if __name__ == '__main__':
     app.run(debug=True)
+    @app.route('/dv09')
+def dv09_page():
+    return "<h1>DV09: Vet Appointment Page</h1><p>This is ZiangDong's independent work for A2</p>"
