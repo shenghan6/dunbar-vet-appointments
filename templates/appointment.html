@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Vet Clinic Appointment Booking</h2>
+<form method="POST">
+    <div class="mb-3">
+        <label for="animalId" class="form-label">Animal Record ID</label>
+        <input type="text" class="form-control" id="animalId" name="animalId">
+    </div>
+    <div class="mb-3">
+        <label for="petName" class="form-label">Pet Name</label>
+        <input type="text" class="form-control" id="petName" name="petName">
+    </div>
+    <div class="mb-3">
+        <label for="ownerName" class="form-label">Owner Full Name</label>
+        <input type="text" class="form-control" id="ownerName" name="ownerName">
+    </div>
+    <div class="mb-3">
+        <label for="ownerContact" class="form-label">Owner Contact Number</label>
+        <input type="text" class="form-control" id="ownerContact" name="ownerContact">
+    </div>
+    <!-- =========这里后面粘贴DV07的日期、时隙、诊室代码========= -->
+     <div class="mb-3">
+    <label for="appointmentDate" class="form-label">Appointment Date</label>
+    <input type="date" class="form-control" id="appointmentDate">
+</div>
+
+<div class="mb-3">
+    <label for="timeSlot" class="form-label">15‑min Time Slot</label>
+    <select class="form-select" id="timeSlot">
+        <option>09:00‑09:15</option>
+        <option>09:15‑09:30</option>
+        <option>09:30‑09:45</option>
+        <option>09:45‑10:00</option>
+    </select>
+</div>
+
+<div class="mb-3">
+    <label for="consultRoom" class="form-label">Consulting Room</label>
+    <select class="form-select" id="consultRoom">
+        <option>Room 1</option>
+        <option>Room 2</option>
+    </select>
+</div>
+
+<script>
+// Disable past dates selection
+const dateInput = document.getElementById('appointmentDate');
+const today = new Date().toISOString().split('T')[0];
+dateInput.min = today;
+</script>
+
+</form>
+{% endblock %}
